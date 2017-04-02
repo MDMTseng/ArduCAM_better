@@ -8,14 +8,28 @@ int loopx(mArduCAM_proto * cam);
 void setup() {
   Wire.begin();        // join i2c bus (address optional for master)
   Serial.begin(250000);  // start serial for output
-  //mArduCAM_OV2640_mini cam_2MPf(53);
+
+  
+  int ret=0;
+  
+  mArduCAM_OV2640_mini cam_2MPf(53);
   mArduCAM_OV7670 cam_0_3MPf;
-  int ret=cam_0_3MPf.Init(22,34,35,36,10);// Data_1st_Pin, VS_pin, HS_pin, PCLK_pin, XCLK_pin) 
+  mArduCAM_proto *cam_v0;
+
+  if(1)
+  {
+    ret=cam_2MPf.Init();
+    cam_v0=&cam_2MPf;
+  }
+  else
+  {
+    ret=cam_0_3MPf.Init(22,34,35,36,10);// Data_1st_Pin, VS_pin, HS_pin, PCLK_pin, XCLK_pin) 
+    cam_v0=&cam_0_3MPf;
+  }
   //Caution:: XCLK_pin cannot pick arbitrarily, it has to be OC2A pin, it's to generate upto 8MHz clk
   if(ret==0)
   {
     printfx("mArduCAM_OV7670 init success\n");
-    mArduCAM_proto *cam_v0=&cam_0_3MPf;
     while(1)
     {
       loopx(cam_v0);
